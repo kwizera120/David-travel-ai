@@ -121,14 +121,15 @@ def ask_groq(message: str, history: list[dict] | None = None) -> str:
         "model": GROQ_MODEL,
         "messages": messages,
         "temperature": 0.7,
+        "max_tokens": 300,
     }
 
     try:
-        response = requests.post(GROQ_URL, json=data, headers=headers, timeout=30)
+        response = requests.post(GROQ_URL, json=data, headers=headers, timeout=15)
         if response.status_code == 400 and "model_decommissioned" in response.text:
             retry_data = dict(data)
             retry_data["model"] = GROQ_FALLBACK_MODEL
-            response = requests.post(GROQ_URL, json=retry_data, headers=headers, timeout=30)
+            response = requests.post(GROQ_URL, json=retry_data, headers=headers, timeout=15)
         response.raise_for_status()
         payload = response.json()
         return payload["choices"][0]["message"]["content"]
@@ -181,10 +182,11 @@ def get_trip_recommendations(
         "model": GROQ_MODEL,
         "messages": messages,
         "temperature": 0.6,
+        "max_tokens": 400,
     }
 
     try:
-        response = requests.post(GROQ_URL, json=data, headers=headers, timeout=30)
+        response = requests.post(GROQ_URL, json=data, headers=headers, timeout=15)
         response.raise_for_status()
         content = response.json()["choices"][0]["message"]["content"]
         

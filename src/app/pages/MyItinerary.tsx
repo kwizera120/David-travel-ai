@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigation } from '../components/Navigation';
-import { Calendar, Plus, Trash2, MapPin, Clock, DollarSign, Download, Heart } from 'lucide-react';
+import { Calendar, Plus, Trash2, MapPin, Clock, DollarSign, Download, Sparkles, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ItineraryItem {
   id: string;
@@ -12,14 +13,8 @@ interface ItineraryItem {
   notes: string;
 }
 
-interface WishlistItem {
-  id: string;
-  title: string;
-  location: string;
-  type: string;
-}
-
 export function MyItinerary() {
+  const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<ItineraryItem[]>([
     {
       id: '1',
@@ -50,14 +45,6 @@ export function MyItinerary() {
     },
   ]);
 
-  const [wishlist, setWishlist] = useState<WishlistItem[]>([
-    { id: '1', title: 'Lake Kivu Kayaking', location: 'Lake Kivu', type: 'Activity' },
-    { id: '2', title: 'Nyungwe Canopy Walk', location: 'Nyungwe Forest', type: 'Activity' },
-    { id: '3', title: 'Bisate Lodge', location: 'Volcanoes NP', type: 'Accommodation' },
-  ]);
-
-  const [activeTab, setActiveTab] = useState<'itinerary' | 'wishlist'>('itinerary');
-
   const [showAddForm, setShowAddForm] = useState(false);
   const [newItem, setNewItem] = useState({
     day: 1,
@@ -67,6 +54,12 @@ export function MyItinerary() {
     cost: '',
     notes: ''
   });
+
+  // Simulate loading state for "Advanced" feel
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const addItem = () => {
     if (newItem.title && newItem.location) {
@@ -97,220 +90,276 @@ export function MyItinerary() {
     return sum + (cost ? parseInt(cost) : 0);
   }, 0);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col">
+        <Navigation />
+        <div className="flex-1 flex flex-col items-center justify-center space-y-4">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full"
+          />
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+            className="text-primary font-bold tracking-widest uppercase text-sm"
+          >
+            Retrieving Your Journey...
+          </motion.p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navigation />
 
       <div className="max-w-5xl mx-auto px-4 py-12">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-white" />
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-12"
+        >
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center shadow-lg shadow-green-600/20">
+                <Calendar className="w-7 h-7" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold text-gray-900">My Itinerary</h1>
-                <p className="text-gray-600">Plan and organize your Rwanda adventure</p>
+                <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">Your Adventure</h1>
+                <p className="text-slate-500 font-medium">Curated itinerary for the Land of a Thousand Hills</p>
               </div>
             </div>
             <button
               onClick={() => setShowAddForm(!showAddForm)}
-              className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all flex items-center gap-2"
+              className="btn-primary flex items-center justify-center gap-2 group"
             >
-              <Plus className="w-5 h-5" />
-              Add Activity
+              <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
+              <span>Add Experience</span>
             </button>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Summary */}
-        <div className="grid md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200">
-            <div className="flex items-center gap-2 text-purple-600 mb-2">
-              <Calendar className="w-5 h-5" />
-              <span className="text-sm font-medium">Total Days</span>
+        {/* Summary Stats */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
+        >
+          {[
+            { label: 'Total Days', value: Object.keys(groupedItems).length, icon: Calendar, color: 'text-primary' },
+            { label: 'Total Activities', value: items.length, icon: MapPin, color: 'text-primary' },
+            { label: 'Estimated Budget', value: `$${totalCost.toLocaleString()}`, icon: DollarSign, color: 'text-primary' },
+          ].map((stat, i) => (
+            <div key={i} className="glass rounded-2xl p-6 border-border shadow-sm flex items-center gap-4 transition-all hover:border-primary/30">
+              <div className={`p-3 rounded-xl bg-primary/10 ${stat.color}`}>
+                <stat.icon className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">{stat.label}</p>
+                <p className="text-2xl font-black text-slate-900">{stat.value}</p>
+              </div>
             </div>
-            <p className="text-3xl font-bold text-gray-900">
-              {Object.keys(groupedItems).length}
-            </p>
-          </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200">
-            <div className="flex items-center gap-2 text-green-600 mb-2">
-              <MapPin className="w-5 h-5" />
-              <span className="text-sm font-medium">Activities</span>
-            </div>
-            <p className="text-3xl font-bold text-gray-900">{items.length}</p>
-          </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200">
-            <div className="flex items-center gap-2 text-blue-600 mb-2">
-              <DollarSign className="w-5 h-5" />
-              <span className="text-sm font-medium">Estimated Cost</span>
-            </div>
-            <p className="text-3xl font-bold text-gray-900">${totalCost.toLocaleString()}</p>
-          </div>
-        </div>
+          ))}
+        </motion.div>
 
-        {/* Add Form */}
-        {showAddForm && (
-          <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-purple-200 mb-8">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Add New Activity</h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Day</label>
-                <input
-                  type="number"
-                  min="1"
-                  value={newItem.day}
-                  onChange={(e) => setNewItem({ ...newItem, day: parseInt(e.target.value) })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
-                <input
-                  type="time"
-                  value={newItem.time}
-                  onChange={(e) => setNewItem({ ...newItem, time: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Activity Title *</label>
-                <input
-                  type="text"
-                  value={newItem.title}
-                  onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
-                  placeholder="e.g., Gorilla Trekking"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Location *</label>
-                <input
-                  type="text"
-                  value={newItem.location}
-                  onChange={(e) => setNewItem({ ...newItem, location: e.target.value })}
-                  placeholder="e.g., Volcanoes National Park"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Cost</label>
-                <input
-                  type="text"
-                  value={newItem.cost}
-                  onChange={(e) => setNewItem({ ...newItem, cost: e.target.value })}
-                  placeholder="e.g., $50"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-                <input
-                  type="text"
-                  value={newItem.notes}
-                  onChange={(e) => setNewItem({ ...newItem, notes: e.target.value })}
-                  placeholder="Optional notes"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-            <div className="flex gap-3 mt-4">
-              <button
-                onClick={addItem}
-                className="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
-              >
-                Add to Itinerary
-              </button>
-              <button
-                onClick={() => setShowAddForm(false)}
-                className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Itinerary Items */}
-        {Object.keys(groupedItems).sort((a, b) => parseInt(a) - parseInt(b)).map(day => (
-          <div key={day} className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">{day}</span>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900">Day {day}</h2>
-            </div>
-
-            <div className="space-y-4">
-              {groupedItems[parseInt(day)].map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-start gap-4 mb-3">
-                        {item.time && (
-                          <div className="flex items-center gap-1 text-gray-600 text-sm min-w-[80px]">
-                            <Clock className="w-4 h-4" />
-                            <span>{item.time}</span>
-                          </div>
-                        )}
-                        <div className="flex-1">
-                          <h3 className="text-lg font-bold text-gray-900 mb-1">{item.title}</h3>
-                          <div className="flex items-center gap-1 text-gray-600 text-sm mb-2">
-                            <MapPin className="w-4 h-4" />
-                            <span>{item.location}</span>
-                          </div>
-                          {item.cost && (
-                            <div className="flex items-center gap-1 text-purple-600 font-semibold text-sm mb-2">
-                              <DollarSign className="w-4 h-4" />
-                              <span>{item.cost}</span>
-                            </div>
-                          )}
-                          {item.notes && (
-                            <p className="text-sm text-gray-600 italic">{item.notes}</p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => deleteItem(item.id)}
-                      className="p-2 hover:bg-red-50 rounded-lg transition-colors group"
-                    >
-                      <Trash2 className="w-5 h-5 text-gray-400 group-hover:text-red-600" />
-                    </button>
+        {/* Add Form with Animation */}
+        <AnimatePresence>
+          {showAddForm && (
+            <motion.div
+              initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+              animate={{ opacity: 1, height: 'auto', marginBottom: 32 }}
+              exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="glass rounded-2xl p-8 border-2 border-primary/20 shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-8 opacity-5">
+                  <Sparkles className="w-32 h-32 text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                  <Plus className="w-6 h-6 text-primary" />
+                  Add New Experience
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <label>Itinerary Day</label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={newItem.day}
+                      onChange={(e) => setNewItem({ ...newItem, day: parseInt(e.target.value) })}
+                      className="w-full focus:ring-primary"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label>Preferred Time</label>
+                    <input
+                      type="time"
+                      value={newItem.time}
+                      onChange={(e) => setNewItem({ ...newItem, time: e.target.value })}
+                      className="w-full focus:ring-primary"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label>Experience Title *</label>
+                    <input
+                      type="text"
+                      value={newItem.title}
+                      onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
+                      placeholder="e.g., Akagera Safari"
+                      className="w-full focus:ring-primary"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label>Location *</label>
+                    <input
+                      type="text"
+                      value={newItem.location}
+                      onChange={(e) => setNewItem({ ...newItem, location: e.target.value })}
+                      placeholder="e.g., Eastern Province"
+                      className="w-full focus:ring-primary"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label>Approx. Cost</label>
+                    <input
+                      type="text"
+                      value={newItem.cost}
+                      onChange={(e) => setNewItem({ ...newItem, cost: e.target.value })}
+                      placeholder="e.g., $150"
+                      className="w-full focus:ring-primary"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label>Notes</label>
+                    <input
+                      type="text"
+                      value={newItem.notes}
+                      onChange={(e) => setNewItem({ ...newItem, notes: e.target.value })}
+                      placeholder="Things to remember"
+                      className="w-full focus:ring-primary"
+                    />
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        ))}
+                <div className="flex gap-4 mt-8">
+                  <button onClick={addItem} className="btn-primary">Confirm Activity</button>
+                  <button onClick={() => setShowAddForm(false)} className="px-6 py-2.5 rounded-lg font-medium text-slate-500 hover:bg-slate-100 transition-colors">Discard</button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Itinerary Timeline */}
+        <div className="space-y-12">
+          {Object.keys(groupedItems).sort((a, b) => parseInt(a) - parseInt(b)).map((day, dayIdx) => (
+            <motion.div 
+              key={day}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: dayIdx * 0.1 }}
+              className="relative"
+            >
+              <div className="flex items-center gap-6 mb-8">
+                <div className="w-14 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center shadow-xl z-10">
+                  <span className="text-xl font-black">0{day}</span>
+                </div>
+                <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent"></div>
+                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Day {day} Schedule</h2>
+              </div>
+
+              <div className="grid gap-6 pl-20 relative before:absolute before:left-[27px] before:top-0 before:bottom-0 before:w-0.5 before:bg-slate-100 before:z-0">
+                <AnimatePresence mode="popLayout">
+                  {groupedItems[parseInt(day)].map((item) => (
+                    <motion.div
+                      key={item.id}
+                      layout
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      className="card-lift glass rounded-2xl p-6 border-border shadow-sm group overflow-hidden relative"
+                    >
+                      <div className="absolute top-0 right-0 w-2 h-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex flex-wrap items-center gap-4 mb-4">
+                            {item.time && (
+                              <span className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full uppercase tracking-wider">
+                                <Clock className="w-3 h-3" />
+                                {item.time}
+                              </span>
+                            )}
+                            <span className="flex items-center gap-1.5 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                              <MapPin className="w-3 h-3" />
+                              {item.location}
+                            </span>
+                            {item.cost && (
+                              <span className="flex items-center gap-1.5 text-primary text-xs font-bold uppercase tracking-wider">
+                                <DollarSign className="w-3 h-3" />
+                                {item.cost}
+                              </span>
+                            )}
+                          </div>
+                          <h3 className="text-xl font-black text-slate-900 mb-2 group-hover:text-primary transition-colors">{item.title}</h3>
+                          {item.notes && (
+                            <div className="flex gap-2 p-3 bg-slate-50 rounded-xl border border-slate-100 mt-4">
+                              <Sparkles className="w-4 h-4 text-primary shrink-0" />
+                              <p className="text-sm text-slate-600 font-medium italic leading-relaxed">{item.notes}</p>
+                            </div>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => deleteItem(item.id)}
+                          className="p-3 bg-red-50 text-red-400 rounded-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          ))}
+        </div>
 
         {items.length === 0 && (
-          <div className="text-center py-16">
-            <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No activities yet</h3>
-            <p className="text-gray-600 mb-6">Start building your perfect Rwanda itinerary</p>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-24 glass rounded-3xl border-dashed border-2 border-slate-200"
+          >
+            <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Calendar className="w-10 h-10 text-slate-300" />
+            </div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-2">Blank Canvas</h3>
+            <p className="text-slate-500 mb-8 max-w-xs mx-auto">Your Rwanda journey is waiting to be written. Add your first experience.</p>
             <button
               onClick={() => setShowAddForm(true)}
-              className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all inline-flex items-center gap-2"
+              className="btn-primary"
             >
-              <Plus className="w-5 h-5" />
-              Add First Activity
+              Start Building
             </button>
-          </div>
+          </motion.div>
         )}
 
-        {/* Export Button */}
+        {/* Action Footer */}
         {items.length > 0 && (
-          <div className="mt-8 flex justify-center">
-            <button className="bg-white text-purple-600 border-2 border-purple-600 px-8 py-4 rounded-lg font-semibold hover:bg-purple-50 transition-colors flex items-center gap-2">
-              <Download className="w-5 h-5" />
-              Export Itinerary (PDF)
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="mt-16 flex justify-center"
+          >
+            <button className="flex items-center gap-3 px-10 py-5 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-tighter hover:bg-slate-800 transition-all hover:shadow-2xl active:scale-95 group">
+              <Download className="w-6 h-6 group-hover:animate-bounce" />
+              <span>Download PDF Guide</span>
             </button>
-          </div>
+          </motion.div>
         )}
       </div>
     </div>

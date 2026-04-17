@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
+
 interface User {
   id: string;
   name: string;
@@ -22,66 +24,109 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Check if user is already logged in on mount
   useEffect(() => {
     const storedUser = localStorage.getItem('sura_rwanda_user');
-    if (storedUser) {
+    const token = localStorage.getItem('sura_rwanda_token');
+    if (storedUser && token) {
       setUser(JSON.parse(storedUser));
+      // Optionally verify with backend
+      fetch(`${API_BASE}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((r) => (r.ok ? r.json() : Promise.reject()))
+        .then((data) => setUser(data.user))
+        .catch(() => {
+          // Token invalid — keep local data as fallback
+        });
     }
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // In a real app, this would call your backend API
-      // For now, we'll check against localStorage
+      // Try backend first
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data.user);
+        localStorage.setItem('sura_rwanda_user', JSON.stringify(data.user));
+        localStorage.setItem('sura_rwanda_token', data.token);
+        return true;
+      }
+
+      // Fallback: check localStorage users
       const users = JSON.parse(localStorage.getItem('sura_rwanda_users') || '[]');
       const foundUser = users.find((u: any) => u.email === email && u.password === password);
-
       if (foundUser) {
         const userData = { id: foundUser.id, name: foundUser.name, email: foundUser.email };
         setUser(userData);
         localStorage.setItem('sura_rwanda_user', JSON.stringify(userData));
         return true;
       }
-      
+
       return false;
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch {
+      // Backend unreachable — fallback to localStorage
+      const users = JSON.parse(localStorage.getItem('sura_rwanda_users') || '[]');
+      const foundUser = users.find((u: any) => u.email === email && u.password === password);
+      if (foundUser) {
+        const userData = { id: foundUser.id, name: foundUser.name, email: foundUser.email };
+        setUser(userData);
+        localStorage.setItem('sura_rwanda_user', JSON.stringify(userData));
+        return true;
+      }
       return false;
     }
   };
 
   const signup = async (name: string, email: string, password: string): Promise<boolean> => {
     try {
-      // In a real app, this would call your backend API
-      const users = JSON.parse(localStorage.getItem('sura_rwanda_users') || '[]');
-      
-      // Check if user already exists
-      if (users.find((u: any) => u.email === email)) {
-        return false;
+      // Try backend first
+      const res = await fetch(`${API_BASE}/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data.user);
+        localStorage.setItem('sura_rwanda_user', JSON.stringify(data.user));
+        localStorage.setItem('sura_rwanda_token', data.token);
+        // Also save locally as fallback
+        const users = JSON.parse(localStorage.getItem('sura_rwanda_users') || '[]');
+        users.push({ id: data.user.id, name, email, password });
+        localStorage.setItem('sura_rwanda_users', JSON.stringify(users));
+        return true;
       }
 
-      const newUser = {
-        id: Date.now().toString(),
-        name,
-        email,
-        password // In production, NEVER store passwords in plain text!
-      };
+      if (res.status === 409) return false; // Already exists
 
-      users.push(newUser);
-      localStorage.setItem('sura_rwanda_users', JSON.stringify(users));
-
-      const userData = { id: newUser.id, name: newUser.name, email: newUser.email };
-      setUser(userData);
-      localStorage.setItem('sura_rwanda_user', JSON.stringify(userData));
-      
-      return true;
-    } catch (error) {
-      console.error('Signup error:', error);
-      return false;
+      // Fallback to local
+      return localSignup(name, email, password);
+    } catch {
+      return localSignup(name, email, password);
     }
+  };
+
+  const localSignup = (name: string, email: string, password: string): boolean => {
+    const users = JSON.parse(localStorage.getItem('sura_rwanda_users') || '[]');
+    if (users.find((u: any) => u.email === email)) return false;
+    const newUser = { id: Date.now().toString(), name, email, password };
+    users.push(newUser);
+    localStorage.setItem('sura_rwanda_users', JSON.stringify(users));
+    const userData = { id: newUser.id, name, email };
+    setUser(userData);
+    localStorage.setItem('sura_rwanda_user', JSON.stringify(userData));
+    return true;
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('sura_rwanda_user');
+    localStorage.removeItem('sura_rwanda_token');
   };
 
   return (

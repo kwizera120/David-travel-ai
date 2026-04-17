@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Authentication System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto text-center">
+        <h1 class="mb-4">Welcome to Authentication System</h1>
+        <p class="lead mb-4">
+            Experience secure and seamless login with multiple authentication methods.
+        </p>
+        
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Authentication Features</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2">✅ Email/Password registration and login</li>
+                    <li class="mb-2">✅ Google OAuth 2.0 authentication</li>
+                    <li class="mb-2">✅ Facebook OAuth 2.0 authentication</li>
+                    <li class="mb-2">✅ Secure password hashing</li>
+                    <li class="mb-2">✅ User profile management</li>
+                    <li class="mb-2">✅ Session management</li>
+                    <li class="mb-2">✅ Responsive design</li>
+                    <li class="mb-2">✅ Form validation</li>
+                </ul>
+                
+                {% if current_user.is_authenticated %}
+                    <div class="alert alert-success">
+                        <h6>You are logged in as {{ current_user.name }}</h6>
+                        <p class="mb-0">Auth Method: {{ current_user.provider.title() }}</p>
+                        <p class="mb-0">Email: {{ current_user.email }}</p>
+                        <p class="mb-0">Member Since: {{ current_user.created_at.strftime('%B %d, %Y') if current_user.created_at else 'N/A' }}</p>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+                        <a href="{{ url_for('logout') }}" class="btn btn-outline-secondary">Logout</a>
+                    </div>
+                {% else %}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg me-md-2">Create Account</a>
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">Sign In</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">📧 Email Auth</h5>
+                        <p class="card-text">Traditional email and password authentication with secure hashing.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">🔵 Google OAuth</h5>
+                        <p class="card-text">Quick login with your Google account using OAuth 2.0.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">📘 Facebook OAuth</h5>
+                        <p class="card-text">Sign in instantly with your Facebook account.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

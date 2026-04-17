@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Navigation } from '../components/Navigation';
 import { Footer } from '../components/Footer';
-import { Map, Users, Calendar, Check, ArrowRight, CloudSun, Banknote, Briefcase, Globe, Info, ClipboardCheck } from 'lucide-react';
+import { Map, Users, Calendar, Check, ArrowRight, CloudSun, Banknote, Briefcase, Globe, Info, ClipboardCheck, Navigation2, TrendingUp, Sparkles, Utensils, Ticket } from 'lucide-react';
 import { Link } from 'react-router';
 import { tripPlannerAPI, type TripPlan } from '../api/travelApi';
+import { aiApi } from '../api/aiApi';
 import { useAuth } from '../context/AuthContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 
 export function TripPlanner() {
   const { isAuthenticated } = useAuth();
@@ -13,7 +14,14 @@ export function TripPlanner() {
   const [duration, setDuration] = useState('');
   const [travelers, setTravelers] = useState('');
   const [interests, setInterests] = useState<string[]>([]);
+  const [fromCity, setFromCity] = useState('Kigali');
+  const [toCity, setToCity] = useState('');
+  const [transportType, setTransportType] = useState('Bus');
+  const [demand, setDemand] = useState('Medium');
+  
   const [plan, setPlan] = useState<TripPlan | null>(null);
+  const [aiRecommendations, setAiRecommendations] = useState<string[]>([]);
+  const [predictedPrice, setPredictedPrice] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,6 +44,8 @@ export function TripPlanner() {
     try {
       setLoading(true);
       setError(null);
+      
+      // 1. Get original plan (mock or existing backend)
       const nextPlan = await tripPlannerAPI.generatePlan({
         budget: Number(budget),
         duration: Number(duration),
@@ -43,8 +53,42 @@ export function TripPlanner() {
         interests,
       });
       setPlan(nextPlan);
-    } catch {
-      setError('We could not generate a live plan right now.');
+
+      // 2. Get AI Recommendations from the new Python backend
+      const distanceResult = await aiApi.getRouteDistance(fromCity, toCity || 'Gisenyi');
+      const distance = distanceResult.success ? distanceResult.distance_km : 150;
+
+      const [aiRecResult, priceResult] = await Promise.all([
+        aiApi.recommendTrip({
+          from_city: fromCity,
+          to_city: toCity || 'Gisenyi',
+          distance_km: distance,
+          transport_type: transportType,
+          demand: demand,
+          budget_usd: Number(budget),
+          duration_days: Number(duration),
+          travelers: Number(travelers),
+          interests,
+        }),
+        aiApi.predictPrice({
+          from_city: fromCity,
+          to_city: toCity || 'Gisenyi',
+          distance_km: distance,
+          transport_type: transportType,
+          demand: demand,
+        })
+      ]);
+
+      if (aiRecResult.recommendations) {
+        setAiRecommendations(aiRecResult.recommendations);
+      }
+      if (priceResult.predicted_price) {
+        setPredictedPrice(priceResult.predicted_price);
+      }
+
+    } catch (err) {
+      console.error(err);
+      setError('AI Synthesis partially failed, but here is your draft plan.');
     } finally {
       setLoading(false);
     }
@@ -85,7 +129,58 @@ export function TripPlanner() {
               Project Parameters
             </h2>
 
-            <div className="space-y-8">
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Departure</label>
+                  <input
+                    type="text"
+                    value={fromCity}
+                    onChange={(e) => setFromCity(e.target.value)}
+                    placeholder="e.g. Kigali"
+                    className="w-full px-4 py-3 bg-slate-50 border-slate-200 focus:ring-primary rounded-xl"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Destination</label>
+                  <input
+                    type="text"
+                    value={toCity}
+                    onChange={(e) => setToCity(e.target.value)}
+                    placeholder="e.g. Gisenyi"
+                    className="w-full px-4 py-3 bg-slate-50 border-slate-200 focus:ring-primary rounded-xl"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Transport</label>
+                  <select
+                    value={transportType}
+                    onChange={(e) => setTransportType(e.target.value)}
+                    className="w-full px-4 py-3 bg-slate-50 border-slate-200 focus:ring-primary rounded-xl"
+                  >
+                    <option value="Bus">Public Bus</option>
+                    <option value="Taxi">Private Taxi</option>
+                    <option value="Rental">Car Rental</option>
+                    <option value="Motorcycle">Moto-Taxi</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Demand Level</label>
+                  <select
+                    value={demand}
+                    onChange={(e) => setDemand(e.target.value)}
+                    className="w-full px-4 py-3 bg-slate-50 border-slate-200 focus:ring-primary rounded-xl"
+                  >
+                    <option value="Low">Low Season</option>
+                    <option value="Medium">Regular</option>
+                    <option value="High">Holiday Peak</option>
+                  </select>
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Investment (USD)</label>
                 <div className="relative">
@@ -103,30 +198,24 @@ export function TripPlanner() {
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Duration (Days)</label>
-                  <div className="relative">
-                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                    <input
-                      type="number"
-                      value={duration}
-                      onChange={(event) => setDuration(event.target.value)}
-                      placeholder="e.g. 7"
-                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-slate-200 focus:ring-primary rounded-2xl"
-                    />
-                  </div>
+                  <input
+                    type="number"
+                    value={duration}
+                    onChange={(event) => setDuration(event.target.value)}
+                    placeholder="e.g. 7"
+                    className="w-full px-4 py-4 bg-slate-50 border-slate-200 focus:ring-primary rounded-2xl"
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Travelers</label>
-                  <div className="relative">
-                    <Users className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                    <input
-                      type="number"
-                      value={travelers}
-                      onChange={(event) => setTravelers(event.target.value)}
-                      placeholder="e.g. 2"
-                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-slate-200 focus:ring-primary rounded-2xl"
-                    />
-                  </div>
+                  <input
+                    type="number"
+                    value={travelers}
+                    onChange={(event) => setTravelers(event.target.value)}
+                    placeholder="e.g. 2"
+                    className="w-full px-4 py-4 bg-slate-50 border-slate-200 focus:ring-primary rounded-2xl"
+                  />
                 </div>
               </div>
 
@@ -137,7 +226,7 @@ export function TripPlanner() {
                     <button
                       key={interest}
                       onClick={() => toggleInterest(interest)}
-                      className={`px-4 py-3 rounded-xl font-bold text-xs uppercase tracking-tighter transition-all duration-300 border-2 ${
+                      className={`px-4 py-3 rounded-xl font-bold text-[10px] uppercase tracking-tighter transition-all duration-300 border-2 ${
                         interests.includes(interest)
                           ? 'border-primary bg-primary text-white shadow-lg shadow-green-600/20'
                           : 'border-slate-100 bg-slate-50 text-slate-500 hover:border-slate-200'
@@ -161,12 +250,12 @@ export function TripPlanner() {
                       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                       className="w-6 h-6 border-2 border-white border-t-transparent rounded-full" 
                     />
-                    <span className="text-lg font-black uppercase tracking-tighter">Architecting Journey...</span>
+                    <span className="text-lg font-black uppercase tracking-tighter">AI Synthesis in progress...</span>
                   </>
                 ) : (
                   <>
-                    <ClipboardCheck className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                    <span className="text-lg font-black uppercase tracking-tighter">Draft Professional Plan</span>
+                    <Sparkles className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                    <span className="text-lg font-black uppercase tracking-tighter">Generate AI Plan</span>
                   </>
                 )}
               </button>
@@ -175,7 +264,7 @@ export function TripPlanner() {
                 <motion.div 
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
-                  className="rounded-2xl bg-red-50 border border-red-100 p-4 text-red-600 font-bold text-sm italic"
+                  className="rounded-2xl bg-amber-50 border border-amber-100 p-4 text-amber-700 font-bold text-sm italic"
                 >
                   {error}
                 </motion.div>
@@ -196,9 +285,9 @@ export function TripPlanner() {
                   <Globe className="w-10 h-10 text-slate-300" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2">Live Data Synthesis</h3>
+                  <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2">AI Neural Engine Ready</h3>
                   <p className="text-slate-500 font-medium italic max-w-sm">
-                    Initiate parameters to generate a comprehensive travel strategy using real-time logistics and cultural insights.
+                    Enter your trip parameters to see real-time AI predictions, budget modeling, and professional recommendations.
                   </p>
                 </div>
               </motion.div>
@@ -227,12 +316,6 @@ export function TripPlanner() {
                     <span className="text-lg font-black uppercase tracking-tighter">Authenticate Access</span>
                     <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
                   </Link>
-                  <Link
-                    to="/login"
-                    className="py-5 rounded-2xl font-black uppercase tracking-tighter border-2 border-white/10 hover:bg-white/5 transition-colors"
-                  >
-                    Register Account
-                  </Link>
                 </div>
               </motion.div>
             ) : plan && isAuthenticated ? (
@@ -240,30 +323,61 @@ export function TripPlanner() {
                 key="plan-result"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="space-y-8"
+                className="space-y-8 pb-12"
               >
-                <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
-                   <div className="absolute top-0 right-0 p-10 opacity-5">
-                      <Ticket className="w-32 h-32" />
+                {/* AI Logistics Strategy */}
+                <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
+                   <div className="absolute top-0 right-0 p-10 opacity-10">
+                      <TrendingUp className="w-32 h-32" />
                    </div>
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
-                       <Check className="w-6 h-6" />
+                       <Sparkles className="w-6 h-6" />
                     </div>
-                    <h3 className="text-2xl font-black uppercase tracking-tighter">Executive Summary</h3>
+                    <h3 className="text-2xl font-black uppercase tracking-tighter">AI Logistics Strategy</h3>
                   </div>
                   <div className="grid grid-cols-2 gap-8 pt-8 border-t border-white/10">
                     <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Total Allocation</p>
-                      <p className="text-3xl font-black">${budget}</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Predicted Fare (RWF)</p>
+                      <p className="text-4xl font-black text-primary">
+                        {predictedPrice ? `~ ${predictedPrice.toLocaleString()}` : 'Calculating...'}
+                      </p>
                     </div>
                     <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Daily Cap / Pax</p>
-                      <p className="text-3xl font-black text-primary">${plan.dailyBudget}</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Route Complexity</p>
+                      <p className="text-3xl font-black">{demand} Demand</p>
                     </div>
+                  </div>
+                  <div className="mt-8 p-4 bg-white/5 rounded-2xl border border-white/10">
+                    <p className="text-xs text-slate-400 italic">
+                      * Predicted price is based on machine learning modeling of historical data and current demand levels.
+                    </p>
                   </div>
                 </div>
 
+                {/* AI Recommendations */}
+                <div className="glass rounded-[2.5rem] p-8 border-primary/20 bg-green-50/50">
+                  <div className="flex items-center gap-3 mb-6">
+                    <Bot className="w-6 h-6 text-primary" />
+                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-900">AI Personal Recommendations</h3>
+                  </div>
+                  <div className="space-y-4">
+                    {aiRecommendations.length > 0 ? (
+                      aiRecommendations.map((rec, idx) => (
+                        <div key={idx} className="flex gap-4 items-start bg-white p-4 rounded-2xl shadow-sm border border-green-100">
+                          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+                            <Check className="w-4 h-4 text-green-600" />
+                          </div>
+                          <p className="text-sm text-slate-600 font-medium italic">{rec}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-sm text-slate-500 italic">Synthesizing personalized advice...</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Existing Plan Data */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="glass rounded-3xl p-6 border-border group transition-all hover:border-primary/20">
                     <div className="flex items-center gap-3 mb-4">
@@ -314,17 +428,9 @@ export function TripPlanner() {
                   </motion.div>
                 ))}
 
-                <div className="glass rounded-3xl p-8 border-border">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Info className="w-5 h-5 text-primary" />
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900">Logistics Overview</h3>
-                  </div>
-                  <p className="text-sm font-medium text-slate-600 italic leading-relaxed">{plan.transport}</p>
-                </div>
-
                 <Link
                   to="/my-itinerary"
-                  className="btn-primary w-full py-5 rounded-2xl flex items-center justify-center gap-3 group"
+                  className="btn-primary w-full py-5 rounded-2xl flex items-center justify-center gap-3 group shadow-2xl shadow-green-500/30"
                 >
                   <span className="text-lg font-black uppercase tracking-tighter">Commit to Itinerary</span>
                   <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />

@@ -687,6 +687,59 @@ const server = createServer(async (req, res) => {
       return;
     }
 
+    // ─── Authentication ───────────────────────────────────────
+    if (req.method === 'POST' && url.pathname === '/api/auth/signup') {
+      const body = await parseBody(req);
+      const { name, email, password } = body;
+      if (!name || !email || !password) {
+        sendJson(res, 400, { error: 'name, email and password are required' });
+        return;
+      }
+      // In-memory store (survives while server runs)
+      if (!global.__users) global.__users = [];
+      if (global.__users.find(u => u.email === email)) {
+        sendJson(res, 409, { error: 'Email already registered' });
+        return;
+      }
+      const user = { id: Date.now().toString(), name, email, password };
+      global.__users.push(user);
+      const token = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
+      sendJson(res, 201, { user: { id: user.id, name: user.name, email: user.email }, token });
+      return;
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/auth/login') {
+      const body = await parseBody(req);
+      const { email, password } = body;
+      if (!global.__users) global.__users = [];
+      const found = global.__users.find(u => u.email === email && u.password === password);
+      if (!found) {
+        sendJson(res, 401, { error: 'Invalid email or password' });
+        return;
+      }
+      const token = Buffer.from(`${found.id}:${Date.now()}`).toString('base64');
+      sendJson(res, 200, { user: { id: found.id, name: found.name, email: found.email }, token });
+      return;
+    }
+
+    if (req.method === 'GET' && url.pathname === '/api/auth/me') {
+      const auth = req.headers.authorization;
+      if (!auth || !auth.startsWith('Bearer ')) {
+        sendJson(res, 401, { error: 'Not authenticated' });
+        return;
+      }
+      const decoded = Buffer.from(auth.slice(7), 'base64').toString();
+      const userId = decoded.split(':')[0];
+      if (!global.__users) global.__users = [];
+      const user = global.__users.find(u => u.id === userId);
+      if (!user) {
+        sendJson(res, 401, { error: 'User not found' });
+        return;
+      }
+      sendJson(res, 200, { user: { id: user.id, name: user.name, email: user.email } });
+      return;
+    }
+
     sendJson(res, 404, { error: 'Route not found' });
   } catch (error) {
     sendJson(res, 500, {

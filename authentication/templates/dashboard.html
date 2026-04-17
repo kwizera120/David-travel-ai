@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - OAuth Authentication{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">User Dashboard</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <img src="{{ user.profile_picture or 'https://via.placeholder.com/150' }}" 
+                             alt="Profile Picture" class="img-fluid rounded-circle mb-3" 
+                             style="max-width: 150px;">
+                        <h5>{{ user.name }}</h5>
+                        <span class="badge bg-primary">{{ user.provider.title() }}</span>
+                    </div>
+                    <div class="col-md-8">
+                        <h6>Account Information</h6>
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><strong>Email:</strong></td>
+                                <td>{{ user.email }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Provider:</strong></td>
+                                <td>{{ user.provider.title() }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Provider ID:</strong></td>
+                                <td>{{ user.provider_id }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Member Since:</strong></td>
+                                <td>{{ user.created_at.strftime('%B %d, %Y') if user.created_at else 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Last Login:</strong></td>
+                                <td>{{ user.last_login.strftime('%B %d, %Y at %I:%M %p') if user.last_login else 'N/A' }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Home</a>
+                    <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

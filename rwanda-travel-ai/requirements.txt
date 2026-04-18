@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pandas
+joblib
+requests
+openpyxl
+scikit-learn
+python-dotenv
+libretranslate
+argostranslate

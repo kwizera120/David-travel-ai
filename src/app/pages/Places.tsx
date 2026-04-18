@@ -35,12 +35,22 @@ export function Places() {
 
         if (!active) return;
 
-        setPlaces(response.data.length > 0 ? response.data : dummyPlaces as unknown as Attraction[]);
+        let data = response.data;
+        if (data.length === 0) {
+          data = selectedCategory === 'All' 
+            ? dummyPlaces 
+            : dummyPlaces.filter(p => p.category === selectedCategory);
+        }
+        
+        setPlaces(data as unknown as Attraction[]);
         setStats(response.stats || { parks: 4, lakes: 3, culture: 4, hotels: 5 });
       } catch {
         if (active) {
           // Fallback to dummy data on error
-          setPlaces(dummyPlaces as unknown as Attraction[]);
+          const data = selectedCategory === 'All' 
+            ? dummyPlaces 
+            : dummyPlaces.filter(p => p.category === selectedCategory);
+          setPlaces(data as unknown as Attraction[]);
           setStats({ parks: 4, lakes: 3, culture: 4, hotels: 5 });
           // Optional: still show a small warning instead of blocking the whole UI
           console.warn('Live destination data sync failed, using local cache.');

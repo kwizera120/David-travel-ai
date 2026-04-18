@@ -101,24 +101,24 @@ export function Home() {
               <span className="text-[10px] font-black uppercase tracking-[0.3em]">AI-Driven Travel Innovation</span>
             </motion.div>
             
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 md:mb-10 tracking-tighter leading-[1.1] md:leading-[0.85] uppercase">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-4 md:mb-8 tracking-tighter leading-[1.1] md:leading-[0.85] uppercase">
               {heroImages[currentSlide].title.split(' ').map((word, i) => (
                 <span key={i} className={['rwanda', 'hills', 'gorillas', 'kivu', 'kigali'].includes(word.toLowerCase()) ? 'text-primary block md:inline' : ''}>{word}{' '}</span>
               ))}
             </h1>
             
-            <p className="text-lg md:text-xl text-slate-300 mb-8 md:mb-14 font-medium leading-relaxed max-w-3xl italic font-serif">
+            <p className="text-base md:text-lg text-slate-300 mb-6 md:mb-10 font-medium leading-relaxed max-w-2xl italic font-serif">
               "Witness the transformation of a nation through personalized, high-tech exploration."
             </p>
             
-            <div className="flex flex-wrap gap-4 md:gap-8">
-              <Link to="/trip-planner" className="btn-primary flex items-center gap-3 md:gap-4 py-4 md:py-6 px-8 md:px-12 rounded-2xl md:rounded-[2rem] group shadow-[0_20px_50px_rgba(22,163,74,0.4)]">
-                <span className="text-lg md:text-xl font-black uppercase tracking-tighter">Start AI Planning</span>
-                <ArrowRight className="w-5 h-5 md:w-6 md:h-6 group-hover:translate-x-3 transition-transform" />
+            <div className="flex flex-wrap gap-3 md:gap-6">
+              <Link to="/trip-planner" className="btn-primary flex items-center gap-2 md:gap-3 py-3 md:py-4 px-6 md:px-10 rounded-xl md:rounded-2xl group shadow-[0_15px_40px_rgba(22,163,74,0.3)]">
+                <span className="text-base md:text-lg font-black uppercase tracking-tighter">Start AI Planning</span>
+                <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-2 transition-transform" />
               </Link>
-              <Link to="/places" className="glass text-white px-8 md:px-12 py-4 md:py-6 rounded-2xl md:rounded-[2rem] font-black uppercase tracking-tighter hover:bg-white hover:text-slate-900 transition-all flex items-center gap-3 md:gap-4">
-                <Globe className="w-5 h-5 md:w-6 md:h-6" />
-                <span>Explore Map</span>
+              <Link to="/places" className="glass text-white px-6 md:px-10 py-3 md:py-4 rounded-xl md:rounded-2xl font-black uppercase tracking-tighter hover:bg-white hover:text-slate-900 transition-all flex items-center gap-2 md:gap-3 text-sm md:text-base">
+                <Globe className="w-4 h-4 md:w-5 md:h-5" />
+                <span>Explore Destinations</span>
               </Link>
             </div>
           </motion.div>
@@ -147,24 +147,24 @@ export function Home() {
       </div>
 
       {/* Features Grid */}
-      <div className="max-w-7xl mx-auto px-6 py-16 md:py-32">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 gap-8 md:gap-12">
+      <div className="max-w-7xl mx-auto px-6 py-12 md:py-24">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-20 gap-6 md:gap-10">
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="max-w-3xl"
+            className="max-w-2xl"
           >
-            <div className="flex items-center gap-3 text-primary mb-4 md:mb-6">
-              <Zap className="w-5 h-5 md:w-6 md:h-6 fill-current" />
+            <div className="flex items-center gap-3 text-primary mb-3 md:mb-5">
+              <Zap className="w-4 h-4 md:w-5 md:h-5 fill-current" />
               <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em]">Core Ecosystem</span>
             </div>
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-slate-900 tracking-tighter mb-6 md:mb-8 uppercase leading-none">The Future of <span className="text-primary italic">Sura</span></h2>
-            <p className="text-lg md:text-2xl text-slate-500 font-medium italic leading-relaxed">Redefining the Rwandan experience with a blend of cultural authenticity and cutting-edge intelligence.</p>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tighter mb-4 md:mb-6 uppercase leading-none">The Future of <span className="text-primary italic">Sura</span></h2>
+            <p className="text-base md:text-xl text-slate-500 font-medium italic leading-relaxed">Redefining the Rwandan experience with a blend of cultural authenticity and cutting-edge intelligence.</p>
           </motion.div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
           {features.map((feature, idx) => {
             const Icon = feature.icon;
             return (
@@ -177,10 +177,10 @@ export function Home() {
               >
                 <Link
                   to={feature.link}
-                  className="card-lift glass rounded-3xl md:rounded-[3rem] p-8 md:p-12 border-slate-100 group block h-full relative overflow-hidden bg-slate-50/50"
+                  className="card-lift glass rounded-2xl md:rounded-3xl p-6 md:p-10 border-slate-100 group block h-full relative overflow-hidden bg-slate-50/50"
                 >
-                  <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-3xl ${feature.color} flex items-center justify-center mb-6 md:mb-10 shadow-2xl group-hover:scale-110 transition-all duration-500 group-hover:rotate-6`}>
-                    <Icon className="w-8 h-8 md:w-10 md:h-10 text-white" />
+                  <div className={`w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl ${feature.color} flex items-center justify-center mb-4 md:mb-8 shadow-xl group-hover:scale-110 transition-all duration-500 group-hover:rotate-6`}>
+                    <Icon className="w-6 h-6 md:w-8 md:h-8 text-white" />
                   </div>
                   
                   {feature.ai && (
@@ -190,12 +190,12 @@ export function Home() {
                     </div>
                   )}
 
-                  <h3 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 mb-4 md:mb-6 group-hover:text-primary transition-colors uppercase tracking-tighter">{feature.title}</h3>
-                  <p className="text-slate-500 text-base md:text-lg font-medium leading-relaxed mb-8 md:mb-12 italic">{feature.description}</p>
+                  <h3 className="text-xl md:text-2xl lg:text-3xl font-black text-slate-900 mb-3 md:mb-5 group-hover:text-primary transition-colors uppercase tracking-tighter">{feature.title}</h3>
+                  <p className="text-slate-500 text-sm md:text-base font-medium leading-relaxed mb-6 md:mb-10 italic">{feature.description}</p>
                   
                   <div className="flex items-center text-primary font-black uppercase tracking-tighter gap-3 text-xs md:text-sm">
                     Enter Platform
-                    <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-4 transition-transform duration-500" />
+                    <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-3 transition-transform duration-500" />
                   </div>
                 </Link>
               </motion.div>

@@ -33,8 +33,8 @@ export function Navigation() {
           <Link to="/" className="flex items-center gap-2 md:gap-3 group shrink-0">
             <Logo />
             <div className="flex flex-col">
-              <span className="text-lg md:text-2xl font-bold text-slate-900 leading-tight tracking-tight group-hover:text-primary transition-colors">SURA RWANDA</span>
-              <span className="text-[8px] md:text-xs font-medium text-primary/80 uppercase tracking-widest -mt-1">Land of a Thousand Hills</span>
+              <span className="text-base md:text-xl font-bold text-slate-900 leading-tight tracking-tight group-hover:text-primary transition-colors">SURA RWANDA</span>
+              <span className="text-[7px] md:text-[10px] font-medium text-primary/80 uppercase tracking-widest -mt-0.5">Land of a Thousand Hills</span>
             </div>
           </Link>
 

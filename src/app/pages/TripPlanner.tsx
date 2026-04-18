@@ -334,21 +334,13 @@ Note: This report is a strategic guide generated based on current AI modeling an
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="ai-planner-wrapper">
           <div className="topbar compact-topbar bg-white border border-[#4a907326] shadow-sm rounded-2xl p-4 mb-8 flex items-center gap-4 group">
-            <div className="brand-mark relative w-14 h-14 rounded-xl bg-gradient-to-br from-[#66c296] via-[#4a9073] to-[#66c296] flex items-center justify-center text-white overflow-hidden">
-              <motion.div 
-                className="absolute inset-0 opacity-20"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-              >
-                <Sparkles className="w-full h-full p-2" />
-              </motion.div>
-              <motion.div
-                className="relative z-10"
+            <div className="brand-mark relative w-12 h-12 md:w-14 md:h-14 rounded-xl overflow-hidden shadow-lg group">
+              <motion.img 
+                src="/logo.webp"
+                alt="Rwanda Travel AI Logo"
+                className="w-full h-full object-contain"
                 whileHover={{ scale: 1.1, rotate: 5 }}
-              >
-                <Compass className="w-7 h-7 absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300 group-hover:opacity-0 group-hover:scale-50" />
-                <MapPin className="w-7 h-7 absolute -translate-x-1/2 -translate-y-1/2 opacity-0 scale-50 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 text-yellow-300" />
-              </motion.div>
+              />
             </div>
             <div>
               <p className="eyebrow text-[10px] font-bold text-[#4a9073] uppercase tracking-widest">Smart Mobility Platform</p>

@@ -120,11 +120,11 @@ export function FoodGuide() {
             >
               {/* Traditional Dishes */}
               <section>
-                <div className="flex items-center gap-3 mb-10">
-                  <ChefHat className="w-7 h-7 text-primary" />
-                  <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Iconic Dishes</h2>
+                <div className="flex items-center gap-2.5 mb-8">
+                  <ChefHat className="w-6 h-6 text-primary" />
+                  <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Iconic Dishes</h2>
                 </div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {foods.map((food, idx) => (
                     <motion.div 
                       key={food.id}
@@ -132,31 +132,31 @@ export function FoodGuide() {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: idx * 0.1, type: "spring", stiffness: 100 }}
-                      className="card-lift glass rounded-[2.5rem] overflow-hidden border-border group bg-white"
+                      className="card-lift glass rounded-xl md:rounded-2xl overflow-hidden border-border group bg-white"
                     >
-                      <div className="relative h-56 overflow-hidden">
+                      <div className="relative h-48 overflow-hidden">
                         <ImageWithFallback src={food.image} alt={food.name} className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-1000" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                         {food.mustTry && (
-                          <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-xl">
-                            <Star className="w-3 h-3 fill-white" />
+                          <div className="absolute top-3 right-3 bg-primary text-white px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest flex items-center gap-1 shadow-xl">
+                            <Star className="w-2.5 h-2.5 fill-white" />
                             Premium Selection
                           </div>
                         )}
-                        <div className="absolute bottom-4 left-6">
-                           <h3 className="text-xl font-black text-white tracking-tighter uppercase">{food.name}</h3>
+                        <div className="absolute bottom-3 left-4">
+                           <h3 className="text-lg font-black text-white tracking-tighter uppercase">{food.name}</h3>
                         </div>
                       </div>
 
-                      <div className="p-8">
-                        <div className="flex items-center justify-between mb-4">
-                          <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">{food.category}</p>
-                          <span className="text-slate-900 font-black text-sm">{food.price}</span>
+                      <div className="p-5">
+                        <div className="flex items-center justify-between mb-3">
+                          <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">{food.category}</p>
+                          <span className="text-slate-900 font-black text-xs">{food.price}</span>
                         </div>
-                        <p className="text-sm text-slate-500 font-medium line-clamp-2 italic leading-relaxed mb-8">{food.description}</p>
-                        <div className="flex flex-wrap gap-2 pt-6 border-t border-slate-50">
+                        <p className="text-xs text-slate-500 font-medium line-clamp-2 italic leading-relaxed mb-6">{food.description}</p>
+                        <div className="flex flex-wrap gap-1.5 pt-4 border-t border-slate-50">
                           {food.ingredients.slice(0, 3).map((ingredient) => (
-                            <span key={ingredient} className="px-3 py-1.5 text-[9px] font-black rounded-lg bg-slate-50 text-slate-500 border border-slate-100 uppercase tracking-tighter hover:bg-white transition-colors">
+                            <span key={ingredient} className="px-2.5 py-1 text-[8px] font-black rounded-md bg-slate-50 text-slate-500 border border-slate-100 uppercase tracking-tighter hover:bg-white transition-colors">
                               {ingredient}
                             </span>
                           ))}
@@ -169,11 +169,11 @@ export function FoodGuide() {
 
               {/* Restaurants */}
               <section>
-                <div className="flex items-center gap-3 mb-10">
-                  <Coffee className="w-7 h-7 text-primary" />
-                  <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Elite Establishments</h2>
+                <div className="flex items-center gap-2.5 mb-8">
+                  <Coffee className="w-6 h-6 text-primary" />
+                  <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Elite Establishments</h2>
                 </div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {restaurants.map((restaurant, idx) => (
                     <motion.div 
                       key={restaurant.id}
@@ -181,28 +181,28 @@ export function FoodGuide() {
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
                       transition={{ delay: idx * 0.1 }}
-                      className="card-lift glass rounded-[2.5rem] p-10 border-border shadow-sm group bg-white hover:bg-slate-50/50"
+                      className="card-lift glass rounded-xl md:rounded-2xl p-7 border-border shadow-sm group bg-white hover:bg-slate-50/50"
                     >
-                      <div className="flex items-start justify-between mb-8">
+                      <div className="flex items-start justify-between mb-6">
                         <div className="flex-1">
-                          <h3 className="text-2xl font-black text-slate-900 mb-3 group-hover:text-primary transition-colors tracking-tighter uppercase leading-none">{restaurant.name}</h3>
-                          <div className="flex items-center gap-2 text-slate-400 font-black uppercase tracking-widest text-[9px]">
-                            <MapPin className="w-4 h-4 text-primary" />
+                          <h3 className="text-lg font-black text-slate-900 mb-2 group-hover:text-primary transition-colors tracking-tighter uppercase leading-none">{restaurant.name}</h3>
+                          <div className="flex items-center gap-1.5 text-slate-400 font-black uppercase tracking-widest text-[8px]">
+                            <MapPin className="w-3.5 h-3.5 text-primary" />
                             <span>{restaurant.location}</span>
                           </div>
                         </div>
-                        <div className="bg-slate-50 text-primary p-3 rounded-2xl group-hover:bg-primary group-hover:text-white transition-all">
-                          <DollarSign className="w-5 h-5" />
+                        <div className="bg-slate-50 text-primary p-2.5 rounded-xl group-hover:bg-primary group-hover:text-white transition-all">
+                          <DollarSign className="w-4 h-4" />
                         </div>
                       </div>
-                      <p className="text-sm font-medium text-slate-500 italic mb-10 leading-relaxed border-l-4 border-primary/20 pl-4">{restaurant.specialty}</p>
-                      <div className="flex items-center justify-between pt-8 border-t border-slate-100">
-                        <div className="flex items-center gap-1.5">
+                      <p className="text-xs font-medium text-slate-500 italic mb-8 leading-relaxed border-l-4 border-primary/20 pl-3">{restaurant.specialty}</p>
+                      <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+                        <div className="flex items-center gap-1">
                           {Array.from({ length: 5 }).map((_, index) => (
-                            <Star key={index} className={`w-3.5 h-3.5 ${index < Math.round(restaurant.rating) ? 'text-amber-500 fill-amber-500' : 'text-slate-200'}`} />
+                            <Star key={index} className={`w-3 h-3 ${index < Math.round(restaurant.rating) ? 'text-amber-500 fill-amber-500' : 'text-slate-200'}`} />
                           ))}
                         </div>
-                        <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">{restaurant.rating} / 5.0</span>
+                        <span className="text-[9px] font-black text-slate-900 uppercase tracking-widest">{restaurant.rating} / 5.0</span>
                       </div>
                     </motion.div>
                   ))}
@@ -211,25 +211,25 @@ export function FoodGuide() {
 
               {/* Tips & Etiquette */}
               {tips && (
-                <div className="grid md:grid-cols-2 gap-10 pt-8">
+                <div className="grid md:grid-cols-2 gap-8 pt-6">
                   <motion.div 
                     initial={{ opacity: 0, x: -30 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    className="glass rounded-[2.5rem] p-12 border-border relative overflow-hidden group bg-white"
+                    className="glass rounded-xl md:rounded-2xl p-8 border-border relative overflow-hidden group bg-white"
                   >
-                    <div className="absolute top-0 right-0 p-12 opacity-5 group-hover:scale-125 transition-transform duration-700">
-                      <ChefHat className="w-40 h-40 text-primary" />
+                    <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-125 transition-transform duration-700">
+                      <ChefHat className="w-32 h-32 text-primary" />
                     </div>
-                    <h3 className="text-2xl font-black text-slate-900 mb-10 flex items-center gap-4 uppercase tracking-tighter">
-                      <Sparkles className="w-7 h-7 text-primary" />
+                    <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3 uppercase tracking-tighter">
+                      <Sparkles className="w-6 h-6 text-primary" />
                       Cultural Etiquette
                     </h3>
-                    <ul className="space-y-6">
+                    <ul className="space-y-4">
                       {tips.etiquette.map((item) => (
-                        <li key={item} className="flex items-start gap-6 group/item">
-                          <div className="w-3 h-3 rounded-full bg-primary mt-1.5 shrink-0 group-hover/item:scale-150 transition-transform" />
-                          <span className="text-slate-600 font-medium leading-relaxed italic text-lg">{item}</span>
+                        <li key={item} className="flex items-start gap-4 group/item">
+                          <div className="w-2.5 h-2.5 rounded-full bg-primary mt-1 shrink-0 group/item:scale-125 transition-transform" />
+                          <span className="text-slate-600 font-medium leading-relaxed italic text-base">{item}</span>
                         </li>
                       ))}
                     </ul>
@@ -239,29 +239,29 @@ export function FoodGuide() {
                     initial={{ opacity: 0, x: 30 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    className="glass rounded-[2.5rem] p-12 border-slate-800 bg-slate-900 text-white relative overflow-hidden group shadow-2xl"
+                    className="glass rounded-xl md:rounded-2xl p-8 border-slate-800 bg-slate-900 text-white relative overflow-hidden group shadow-2xl"
                   >
-                    <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-125 transition-transform duration-700">
-                      <Utensils className="w-40 h-40 text-primary" />
+                    <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform duration-700">
+                      <Utensils className="w-32 h-32 text-primary" />
                     </div>
-                    <h3 className="text-2xl font-black mb-10 flex items-center gap-4 uppercase tracking-tighter">
-                      <Info className="w-7 h-7 text-primary" />
+                    <h3 className="text-xl font-black mb-8 flex items-center gap-3 uppercase tracking-tighter">
+                      <Info className="w-6 h-6 text-primary" />
                       Street Logistics
                     </h3>
-                    <div className="space-y-10">
+                    <div className="space-y-8">
                       <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-4">Elite Hubs</p>
-                        <p className="text-slate-300 font-medium italic text-lg leading-relaxed">{tips.streetFood.bestAreas.join(' • ')}</p>
+                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary mb-3">Elite Hubs</p>
+                        <p className="text-slate-300 font-medium italic text-base leading-relaxed">{tips.streetFood.bestAreas.join(' • ')}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-4">Iconic Eats</p>
-                        <p className="text-slate-300 font-medium italic text-lg leading-relaxed">{tips.streetFood.popularItems.join(' • ')}</p>
+                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary mb-3">Iconic Eats</p>
+                        <p className="text-slate-300 font-medium italic text-base leading-relaxed">{tips.streetFood.popularItems.join(' • ')}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-4">Capital Allocation</p>
-                        <div className="flex flex-wrap gap-3">
+                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary mb-3">Capital Allocation</p>
+                        <div className="flex flex-wrap gap-2.5">
                           {tips.streetFood.priceRange.map(price => (
-                            <span key={price} className="px-5 py-2 bg-white/10 rounded-xl text-xs font-black uppercase tracking-widest border border-white/5 hover:bg-white/20 transition-colors">{price}</span>
+                            <span key={price} className="px-4 py-1.5 bg-white/10 rounded-lg text-[10px] font-black uppercase tracking-widest border border-white/5 hover:bg-white/20 transition-colors">{price}</span>
                           ))}
                         </div>
                       </div>

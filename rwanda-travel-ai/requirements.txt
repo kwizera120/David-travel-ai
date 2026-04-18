@@ -1,5 +1,4 @@
 fastapi
-uvicorn
 pandas
 joblib
 requests
@@ -8,3 +7,5 @@ scikit-learn
 python-dotenv
 libretranslate
 argostranslate
+uvicorn[standard]
+

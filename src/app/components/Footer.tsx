@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import { Facebook, Twitter, Instagram, Youtube, Mail, MapPin, Phone, Globe, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Logo } from './Logo';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -36,33 +37,31 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-slate-900 text-white pt-16 md:pt-24 pb-8 md:pb-12 overflow-hidden relative">
+    <footer className="bg-slate-900 text-white pt-10 md:pt-16 pb-6 md:pb-8 overflow-hidden relative">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/0 via-primary to-primary/0" />
       
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 md:gap-12 mb-12 md:mb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 md:gap-10 mb-8 md:mb-12">
           {/* Brand Section */}
           <div className="sm:col-span-2 lg:col-span-2">
-            <Link to="/" className="flex items-center gap-3 mb-6 md:mb-8 group">
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-primary rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg shadow-green-600/20 group-hover:rotate-12 transition-transform">
-                <Globe className="w-5 h-5 md:w-6 md:h-6 text-white" />
-              </div>
-              <span className="text-2xl md:text-3xl font-black tracking-tighter uppercase">
+            <Link to="/" className="flex items-center gap-3 mb-4 md:mb-6 group">
+              <Logo />
+              <span className="text-xl md:text-2xl font-black tracking-tighter uppercase">
                 Sura<span className="text-primary">Rwanda</span>
               </span>
             </Link>
-            <p className="text-sm md:text-base text-slate-400 font-medium italic mb-6 md:mb-8 leading-relaxed max-w-sm">
+            <p className="text-xs md:text-sm text-slate-400 font-medium italic mb-4 md:mb-6 leading-relaxed max-w-sm">
               The definitive digital companion for exploring the Land of a Thousand Hills. Powered by local insight and global technology.
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               {[Facebook, Twitter, Instagram, Youtube].map((Icon, i) => (
                 <motion.a
                   key={i}
                   href="#"
-                  whileHover={{ y: -5, color: '#16a34a' }}
-                  className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 transition-colors"
+                  whileHover={{ y: -3, color: '#16a34a' }}
+                  className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 transition-colors"
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon className="w-4 h-4" />
                 </motion.a>
               ))}
             </div>
@@ -71,15 +70,15 @@ export function Footer() {
           {/* Quick Links */}
           {sections.map((section) => (
             <div key={section.title}>
-              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-8">{section.title}</h3>
-              <ul className="space-y-4">
+              <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-primary mb-6">{section.title}</h3>
+              <ul className="space-y-3">
                 {section.links.map((link) => (
                   <li key={link.label}>
                     <Link 
                       to={link.href}
-                      className="text-slate-400 hover:text-white transition-colors font-medium flex items-center group"
+                      className="text-xs text-slate-400 hover:text-white transition-colors font-medium flex items-center group"
                     >
-                      <div className="w-0 group-hover:w-2 h-0.5 bg-primary mr-0 group-hover:mr-2 transition-all" />
+                      <div className="w-0 group-hover:w-2 h-0.5 bg-primary mr-0 group-hover:mr-1.5 transition-all" />
                       {link.label}
                     </Link>
                   </li>
@@ -90,44 +89,44 @@ export function Footer() {
         </div>
 
         {/* Contact Strip */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-10 border-y border-white/5 mb-10">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-primary">
-              <MapPin className="w-6 h-6" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-8 border-y border-white/5 mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-primary">
+              <MapPin className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Visit Us</p>
-              <p className="font-bold">Kigali, Rwanda</p>
+              <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Visit Us</p>
+              <p className="text-sm font-bold">Kigali, Rwanda</p>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-primary">
-              <Phone className="w-6 h-6" />
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-primary">
+              <Phone className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Call Us</p>
-              <p className="font-bold">+250 788 000 000</p>
+              <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Call Us</p>
+              <p className="text-sm font-bold">+250 788 000 000</p>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-primary">
-              <Mail className="w-6 h-6" />
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-primary">
+              <Mail className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Email Us</p>
-              <p className="font-bold">explore@surarwanda.rw</p>
+              <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Email Us</p>
+              <p className="text-sm font-bold text-xs md:text-sm">explore@surarwanda.rw</p>
             </div>
           </div>
         </div>
 
         {/* Bottom Section */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-slate-500 text-sm font-medium">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-slate-500 text-[10px] md:text-xs font-medium">
             © {currentYear} Sura Rwanda. All rights reserved. Made for the Rwanda Innovation Hackathon.
           </p>
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Proudly Rwandan</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+            <Sparkles className="w-3 h-3 text-primary" />
+            <span className="text-[9px] font-black uppercase tracking-widest text-slate-300">Proudly Rwandan</span>
           </div>
         </div>
       </div>

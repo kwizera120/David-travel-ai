@@ -84,7 +84,7 @@ export function Places() {
             </div>
           </div>
           
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2">
             {categories.map((cat, i) => {
               const Icon = cat.icon;
               const isActive = selectedCategory === cat.id;
@@ -95,14 +95,14 @@ export function Places() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: i * 0.05 }}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-black transition-all duration-300 border-2 ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl font-black transition-all duration-300 border-2 ${
                     isActive
-                      ? 'bg-primary border-primary text-white shadow-xl shadow-green-600/20'
+                      ? 'bg-primary border-primary text-white shadow-lg shadow-green-600/20'
                       : 'bg-slate-50 border-slate-100 text-slate-500 hover:border-slate-200'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span className="text-xs uppercase tracking-widest">{cat.name}</span>
+                  <Icon className="w-3.5 h-3.5" />
+                  <span className="text-[10px] uppercase tracking-widest">{cat.name}</span>
                 </motion.button>
               );
             })}
@@ -114,7 +114,7 @@ export function Places() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16"
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"
         >
           {[
             { label: 'Wildlife Parks', value: stats.parks, icon: TreePine, color: 'text-green-600', bg: 'bg-green-50' },
@@ -122,12 +122,12 @@ export function Places() {
             { label: 'Heritage Sites', value: stats.culture, icon: Heart, color: 'text-rose-600', bg: 'bg-rose-50' },
             { label: 'Premium Stays', value: stats.hotels, icon: Hotel, color: 'text-amber-600', bg: 'bg-amber-50' },
           ].map((stat, i) => (
-            <div key={i} className="glass rounded-3xl p-6 border-border shadow-sm flex flex-col items-center justify-center text-center group transition-all hover:bg-white hover:shadow-xl">
-              <div className={`w-12 h-12 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center mb-4 group-hover:rotate-12 transition-transform`}>
-                <stat.icon className="w-6 h-6" />
+            <div key={i} className="glass rounded-2xl p-4 border-border shadow-sm flex flex-col items-center justify-center text-center group transition-all hover:bg-white hover:shadow-lg">
+              <div className={`w-10 h-10 ${stat.bg} ${stat.color} rounded-xl flex items-center justify-center mb-3 group-hover:rotate-12 transition-transform`}>
+                <stat.icon className="w-5 h-5" />
               </div>
-              <p className="text-3xl font-black text-slate-900 leading-none">{stat.value}</p>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-2">{stat.label}</p>
+              <p className="text-2xl font-black text-slate-900 leading-none">{stat.value}</p>
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1.5">{stat.label}</p>
             </div>
           ))}
         </motion.div>
@@ -172,7 +172,7 @@ export function Places() {
               key="grid"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-10"
+              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
             >
               {places.map((place, idx) => (
                 <motion.div
@@ -182,58 +182,58 @@ export function Places() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: (idx % 3) * 0.1, type: "spring", stiffness: 100 }}
-                  className="card-lift glass rounded-[2.5rem] overflow-hidden border-border group bg-white hover:bg-slate-50/50"
+                  className="card-lift glass rounded-2xl overflow-hidden border-border group bg-white hover:bg-slate-50/50"
                 >
-                  <div className="relative h-72 overflow-hidden">
+                  <div className="relative h-60 overflow-hidden">
                     <ImageWithFallback src={place.image} alt={place.name} className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-1000" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                     
-                    <div className="absolute top-6 left-6">
-                       <span className="bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg">
+                    <div className="absolute top-4 left-4">
+                       <span className="bg-primary text-white px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-[0.2em] shadow-lg">
                         {place.category}
                       </span>
                     </div>
 
-                    <div className="absolute top-6 right-6 bg-white/95 backdrop-blur-md rounded-2xl p-2 px-3 flex items-center gap-1.5 shadow-2xl border border-white/20">
-                      <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                      <span className="text-xs font-black text-slate-900">{place.rating}</span>
+                    <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md rounded-xl p-1.5 px-2.5 flex items-center gap-1 shadow-xl border border-white/20">
+                      <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                      <span className="text-[10px] font-black text-slate-900">{place.rating}</span>
                     </div>
 
-                    <div className="absolute bottom-6 left-8 right-8">
-                       <h3 className="text-2xl font-black text-white tracking-tighter uppercase leading-none drop-shadow-md">
+                    <div className="absolute bottom-4 left-6 right-6">
+                       <h3 className="text-xl font-black text-white tracking-tighter uppercase leading-none drop-shadow-md">
                         {place.name}
                       </h3>
                     </div>
                   </div>
 
-                  <div className="p-10">
-                    <p className="text-slate-500 font-medium text-sm mb-8 line-clamp-2 leading-relaxed italic">
+                  <div className="p-7">
+                    <p className="text-slate-500 font-medium text-xs mb-6 line-clamp-2 leading-relaxed italic">
                       {place.description}
                     </p>
 
-                    <div className="flex items-center justify-between mb-8 pb-8 border-b border-slate-100">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-slate-50 rounded-xl">
-                          <Clock className="w-4 h-4 text-primary" />
+                    <div className="flex items-center justify-between mb-6 pb-6 border-b border-slate-100">
+                      <div className="flex items-center gap-2.5">
+                        <div className="p-1.5 bg-slate-50 rounded-lg">
+                          <Clock className="w-3.5 h-3.5 text-primary" />
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{place.duration}</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">{place.duration}</span>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-slate-50 rounded-xl">
-                          <DollarSign className="w-4 h-4 text-primary" />
+                      <div className="flex items-center gap-2.5">
+                        <div className="p-1.5 bg-slate-50 rounded-lg">
+                          <DollarSign className="w-3.5 h-3.5 text-primary" />
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{place.price}</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">{place.price}</span>
                       </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <div className="flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-primary animate-pulse" />
-                        <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em]">Signature Experiences</h4>
+                        <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
+                        <h4 className="text-[9px] font-black text-slate-900 uppercase tracking-[0.2em]">Signature Experiences</h4>
                       </div>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-1.5">
                         {place.activities.slice(0, 3).map((activity) => (
-                          <span key={activity} className="px-4 py-2 rounded-xl text-[10px] font-bold bg-white text-slate-600 border border-slate-100 uppercase tracking-tighter transition-colors hover:border-primary/20 hover:bg-slate-50">
+                          <span key={activity} className="px-3 py-1.5 rounded-lg text-[9px] font-bold bg-white text-slate-600 border border-slate-100 uppercase tracking-tighter transition-colors hover:border-primary/20 hover:bg-slate-50">
                             {activity}
                           </span>
                         ))}

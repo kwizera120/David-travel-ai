@@ -36,22 +36,22 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-slate-900 text-white pt-24 pb-12 overflow-hidden relative">
+    <footer className="bg-slate-900 text-white pt-16 md:pt-24 pb-8 md:pb-12 overflow-hidden relative">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/0 via-primary to-primary/0" />
       
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 md:gap-12 mb-12 md:mb-20">
           {/* Brand Section */}
-          <div className="lg:col-span-2">
-            <Link to="/" className="flex items-center gap-3 mb-8 group">
-              <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-green-600/20 group-hover:rotate-12 transition-transform">
-                <Globe className="w-6 h-6 text-white" />
+          <div className="sm:col-span-2 lg:col-span-2">
+            <Link to="/" className="flex items-center gap-3 mb-6 md:mb-8 group">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-primary rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg shadow-green-600/20 group-hover:rotate-12 transition-transform">
+                <Globe className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </div>
-              <span className="text-3xl font-black tracking-tighter uppercase">
+              <span className="text-2xl md:text-3xl font-black tracking-tighter uppercase">
                 Sura<span className="text-primary">Rwanda</span>
               </span>
             </Link>
-            <p className="text-slate-400 font-medium italic mb-8 leading-relaxed max-w-sm">
+            <p className="text-sm md:text-base text-slate-400 font-medium italic mb-6 md:mb-8 leading-relaxed max-w-sm">
               The definitive digital companion for exploring the Land of a Thousand Hills. Powered by local insight and global technology.
             </p>
             <div className="flex gap-4">

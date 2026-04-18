@@ -70,4 +70,13 @@ export const aiApi = {
     });
     return response.json();
   },
+
+  detect: async (text: string) => {
+    const response = await fetch(`${AI_API_BASE_URL}/detect`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+    return response.json();
+  },
 };

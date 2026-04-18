@@ -30,11 +30,11 @@ export function Navigation() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
+          <Link to="/" className="flex items-center gap-2 md:gap-3 group shrink-0">
             <Logo />
             <div className="flex flex-col">
-              <span className="text-2xl font-bold text-slate-900 leading-tight tracking-tight group-hover:text-primary transition-colors">SURA RWANDA</span>
-              <span className="text-xs font-medium text-primary/80 uppercase tracking-widest -mt-1">Land of a Thousand Hills</span>
+              <span className="text-lg md:text-2xl font-bold text-slate-900 leading-tight tracking-tight group-hover:text-primary transition-colors">SURA RWANDA</span>
+              <span className="text-[8px] md:text-xs font-medium text-primary/80 uppercase tracking-widest -mt-1">Land of a Thousand Hills</span>
             </div>
           </Link>
 
